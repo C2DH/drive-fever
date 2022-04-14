@@ -25,13 +25,13 @@ print(
     'DRIVE_FEVER_GIT_REVISION',
     os.environ.get('DRIVE_FEVER_GIT_REVISION', 'no revision'), '\n',
     'GOOGLE_DRIVE_SCOPES:', SCOPES, '\n',
-    'KEY_FILEPATH:', KEY_FILEPATH, '\n',
-    'INITIAL_PATH:', INITIAL_PATH, '\n',
+    'GOOGLE_SPREADHSEEET_SERVICE_ACCOUNT_KEY:', KEY_FILEPATH, '\n',
+    'GOOGLE_DRIVE_INITIAL_PATH:', INITIAL_PATH, '\n',
     'DOWNLOADABLE_MIMETYPES:', DOWNLOADABLE_MIMETYPES
 )
 
 if not KEY_FILEPATH or not os.path.exists(KEY_FILEPATH):
-    os._exit('credentials file not found, check KEY_FILEPATH...')
+    os._exit('credentials file not found, check GOOGLE_SPREADHSEEET_SERVICE_ACCOUNT_KEY env...')
 
 FOLDER = 'application/vnd.google-apps.folder'
 
