@@ -6,18 +6,21 @@ from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 from pathvalidate import sanitize_filename
 from googleapiclient.http import MediaIoBaseDownload
+from pysondb import db
 
 # take environment variables from .env.
 load_dotenv(override=True)
 
 # Load env variables
+FOLDER = 'application/vnd.google-apps.folder'
 SCOPES = os.environ.get('GOOGLE_DRIVE_SCOPES', '').split(',')
 KEY_FILEPATH = os.environ.get('GOOGLE_SPREADHSEEET_SERVICE_ACCOUNT_KEY', '')
 INITIAL_PATH = os.environ.get('GOOGLE_DRIVE_INITIAL_PATH', '')
 DOWNLOADABLE_MIMETYPES = os.environ.get(
     'DOWNLOADABLE_MIMETYPES',
     'image/jpg,application/pdf,image/tiff').split(',')
-
+PYSONDB_FILEPATH = os.environ.get(
+    'PYSONDB_FILEPATH', './data-pysondb.json')
 print(
     'Welcome to Drive Fever!\n\n',
     'DRIVE_FEVER_GIT_TAG:',
@@ -29,20 +32,22 @@ print(
     'GOOGLE_DRIVE_SCOPES:', SCOPES, '\n',
     'GOOGLE_SPREADHSEEET_SERVICE_ACCOUNT_KEY:', KEY_FILEPATH, '\n',
     'GOOGLE_DRIVE_INITIAL_PATH:', INITIAL_PATH, '\n',
-    'DOWNLOADABLE_MIMETYPES:', DOWNLOADABLE_MIMETYPES
+    'DOWNLOADABLE_MIMETYPES:', DOWNLOADABLE_MIMETYPES, '\n',
+    'PYSONDB_FILEPATH:', PYSONDB_FILEPATH
 )
 
 if not KEY_FILEPATH or not os.path.exists(KEY_FILEPATH):
-    os._exit('credentials file not found, check GOOGLE_SPREADHSEEET_SERVICE_ACCOUNT_KEY env...')
-
-FOLDER = 'application/vnd.google-apps.folder'
+    os._exit('Not found credentials GOOGLE_SPREADHSEEET_SERVICE_ACCOUNT_KEY')
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(
             KEY_FILEPATH, scopes=SCOPES)
 service = build('drive', 'v3', credentials=credentials)
+# open/create db
+pysondb = db.getDb(PYSONDB_FILEPATH)
 
 
 def get_items_in_folder(folder_id, pageToken=None, offset=0):
+    print(f'get_items_in_folder id:{folder_id} offset:{offset} ...')
     results = service.files().list(
         pageSize=10,
         pageToken=pageToken,
@@ -112,6 +117,8 @@ def download_items(items=[], path='./data'):
 
 
 if __name__ == '__main__':
+    print('---')
+    print(f'Start on: {INITIAL_PATH}')
     items = get_items_in_folder(INITIAL_PATH)
     done_items, failed_items = download_items(items=items)
     print(f'Done: {len(done_items)}, failed:{len(failed_items)}')

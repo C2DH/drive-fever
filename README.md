@@ -13,3 +13,17 @@ docker run -it \
   -v private:/drive-fever/private \
   c2dhunilu/drive-fever python download.py
 ```
+
+## development & test
+Create an env file:
+```
+GOOGLE_DRIVE_INITIAL_PATH=your initialpath
+GOOGLE_SPREADHSEEET_SERVICE_ACCOUNT_KEY=your path to service account key
+
+```
+
+If a .env file is available with all previous env variables, just:
+
+```
+pipenv run python download.py
+```
