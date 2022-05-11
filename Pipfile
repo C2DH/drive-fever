@@ -12,6 +12,7 @@ google-auth-oauthlib = "*"
 oauth2client = "*"
 python-dotenv = "*"
 pathvalidate = "*"
+pysondb = "*"
 
 [requires]
 python_version = "3.8"
